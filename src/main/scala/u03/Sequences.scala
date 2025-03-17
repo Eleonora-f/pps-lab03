@@ -62,9 +62,11 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10] => [10]
      * E.g., [] => []
      */
-    def reverse[A](s: Sequence[A]): Sequence[A] = s match
-      case Cons(h, t) => Cons(t, reverse(h,))
-      case _ => s
+    def reverse[A](s: Sequence[A]): Sequence[A] =
+      def helper(s: Sequence[A], r: Sequence[A]): Sequence[A] = s match
+        case Cons(h, t) => helper(t, Cons(h, r))
+        case _ => r
+      helper(s, Nil())
 
     /*
      * Map the elements of the sequence to a new sequence and flatten the result
@@ -72,7 +74,9 @@ object Sequences: // Essentially, generic linkedlists
      * E.g., [10, 20, 30], calling with mapper(v => [v]) returns [10, 20, 30]
      * E.g., [10, 20, 30], calling with mapper(v => Nil()) returns []
      */
-    def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = ???
+    def flatMap[A, B](s: Sequence[A])(mapper: A => Sequence[B]): Sequence[B] = s match
+      case Cons(h,t) => concat(mapper(h), flatMap(t)(mapper))
+      case _ => Nil()
 
     /*
      * Get the minimum element in the sequence
